@@ -1,4 +1,5 @@
 const MIIOpropsVocabulary = require('../lib/propsLib.js');
+const mihome = require('node-mihome');
 
 module.exports = function(RED) {
   function MIIOgetdataNode(config) {
