@@ -78,9 +78,10 @@ module.exports = function(RED) {
       node.emit('onInit', data);
     });
     
-    // 6) Commands from send-node
+    // 6) Commands from nodes
     ExecuteSingleCMD ();
     ExecuteJsonCMD ();
+    getDeviceData ();
 
 
     // functions in USE:
@@ -129,8 +130,8 @@ module.exports = function(RED) {
       }
     };
     
-    function getData () {
-      node.on('onGetData', async function (cmd) {
+    function getDeviceData () {
+      node.on('onGetDeviceData', async function () {
         try {
           // E.1) Initializing device if MIOT
           if (device._miotSpecType) {
@@ -140,7 +141,7 @@ module.exports = function(RED) {
           ConnDevice();
           device.destroy();
         } catch(exception) {
-          node.emit('onGetDataError', exception.message, cmd);
+          node.emit('onGetDeviceDataError', exception.message);
         };
       })
     };
