@@ -62,14 +62,28 @@ module.exports = function(RED) {
       model: node.model,
       address: node.address,
       token: node.token,
-  });
-
-    // 3) Defining auto-polling variables
-    Poll_or_Not = false;
-    Polling_Interval = 30; 
+      refresh: 0
+    });
 
     // 4) Tiding Up after device is destroyed
     node.on('close', () => OnClose());
+    
+    device.on('properties', (data) => {
+      NewData = data;
+      // D.1.1) check for any changes in properties
+      for (var key in NewData) {
+        var value = NewData[key];
+        if (key in OldData) {
+          if (OldData[key] !== value) {
+            node.emit('onChange', data);
+            OldData = data;
+            break;
+          }
+        }
+      };
+      // D.1.2) case with no changes in properties
+      OldData = data;                   
+    });
 
     // 5) Main Function - Polling the device
     OldData = {};
@@ -104,25 +118,8 @@ module.exports = function(RED) {
     // D) Main Function - Polling the device
     async function ConnDevice () {
       try {
-        // D.1) connect to device and poll for properties 
-        await device.on('properties', (data) => {
-          NewData = data;
-          // D.1.1) check for any changes in properties
-          for (var key in NewData) {
-            var value = NewData[key];
-            if (key in OldData) {
-              if (OldData[key] !== value) {
-                node.emit('onChange', data);
-                OldData = data;
-                break;
-              }
-            }
-          };
-          // D.1.2) case with no changes in properties
-          OldData = data;                   
-        });
         await device.init();
-        device.destroy();
+        
       } catch (exception) {
         // D.2) catching errors from MIHOME Protocol
         PollError = `Mihome Exception. IP: ${node.address} -> ${exception.message}`;
