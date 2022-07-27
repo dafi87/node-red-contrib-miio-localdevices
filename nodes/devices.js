@@ -21,8 +21,6 @@ module.exports = function(RED) {
     node.username = n.username;
     node.password = n.password
     
-    node.isPolling = n.isPolling;
-    node.pollinginterval = n.pollinginterval;
 
     // 0) Transfering data from runtime to filter commands CONFIG-node and commands in SEND-node
     var NODE_PATH = '/node-red-contrib-miio-localdevices/nodes/';
@@ -67,9 +65,8 @@ module.exports = function(RED) {
   });
 
     // 3) Defining auto-polling variables
-    Poll_or_Not = node.isPolling;
-    if (node.pollinginterval == null) {Polling_Interval = 30} 
-    else {Polling_Interval = node.pollinginterval};
+    Poll_or_Not = false;
+    Polling_Interval = 30; 
 
     // 4) Tiding Up after device is destroyed
     node.on('close', () => OnClose());
@@ -84,23 +81,6 @@ module.exports = function(RED) {
     // 6) Commands from send-node
     ExecuteSingleCMD ();
     ExecuteJsonCMD ();
-    
-    // 7) Auto-polling cycle
-    setTimeout(function run() {    
-      // 7.1) stop auto-polling cycle
-      if (Poll_or_Not == false) {return};
-      // 7.2) continue auto-polling cycle
-      if (Poll_or_Not == true && Polling_Interval > 0) {
-        // 7.2.1) re-define auto-polling interval
-        if (node.pollinginterval == null) {New_Interval = 30}
-        else {New_Interval = node.pollinginterval};
-        // 7.2.2) check for changing the Interval, if changed then stop previous cycle
-        if (New_Interval == Polling_Interval) {
-          ConnDevice ();
-          setTimeout(run, Polling_Interval * 1000);
-        }; 
-      };
-    },  Polling_Interval * 1000);
 
 
     // functions in USE:
@@ -119,6 +99,7 @@ module.exports = function(RED) {
     function OnClose () {
       device.destroy();
     };
+    
     // D) Main Function - Polling the device
     async function ConnDevice () {
       try {
@@ -147,6 +128,24 @@ module.exports = function(RED) {
         node.emit('onError', PollError);
       }
     };
+    
+    function getData () {
+      node.on('onGetData', async function (cmd) {
+        try {
+          // E.1) Initializing device if MIOT
+          if (device._miotSpecType) {
+            await device.init();
+          };
+          
+          ConnDevice();
+          device.destroy();
+        } catch(exception) {
+          node.emit('onGetDataError', exception.message, cmd);
+        };
+      })
+    };
+    
+    
     // E) Executing single command from send-node 
     function ExecuteSingleCMD () {
       node.on('onSingleCommand', async function (SingleCMD, SinglePayload) {
