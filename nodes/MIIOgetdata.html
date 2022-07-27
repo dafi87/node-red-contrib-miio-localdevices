@@ -29,9 +29,6 @@
       <dt>payload <span class="property-type">object</span></dt>
       <dd>object with full list of device properties</dd>
 
-      <dt>polling <span class="property-type">string</span></dt>
-      <dd>state and interval of auto-polling</dd>
-
       <dt>name <span class="property-type">string</span></dt>
       <dd>name and room of the device</dd>
 
@@ -42,8 +39,7 @@
       <dd>model of the device</dd>
     </dl>    
   <h3>Output Messages</h3>
-    <p>If auto-polling in config-node is turned off then message will be send only once on initialization and after deploy</p>
-    <p>If auto-polling in config-node is turned on then message will be sent each time properties of the device have changed</p>
+    <p>Message will be send only once on initialization and after deploy, and when triggered from input.</p>
   <h3>Details</h3>
     <p>For details please refer to <a href="https://github.com/stason325/node-red-contrib-miio-localdevices">documentation</a></p>
 </script>
@@ -55,9 +51,9 @@
     color: '#00bc9c',
     defaults: {
       devices: {value: "", type: "MIIOdevices"},
-      prop_type: {value: ""},
+      prop_type: {value: "MiProtocol"},
     },
-    inputs:0,
+    inputs:1,
     outputs:1,
     icon: "mi.png",
     align: "right",
