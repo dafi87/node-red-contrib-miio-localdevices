@@ -65,14 +65,6 @@
     <input type="text" id="node-config-input-password" placeholder="MiHome password">
 	</div>
     
-  <div class="form-row">
-    <label for="node-config-input-isPolling"><i class="fa fa-refresh"></i> Auto Polling</label>
-    <input type="checkbox" id="node-config-input-isPolling">
-  </div>
-  <div class="form-row polling-show-or-hide">
-    <label for="node-config-input-pollinginterval"><i class="fa fa-refresh"></i> Polling, sec</label>
-    <input type="text" id="node-config-input-pollinginterval" placeholder="XX seconds">
-	</div>
 </script>
 
 <script type="text/javascript">
@@ -89,10 +81,7 @@
       
       isMIOT: {value: false},
       username: {value: ""},
-      password: {value: ""},
-
-      isPolling : {value: false},
-      pollinginterval: {value: "30"}
+      password: {value: ""}
     },
     label: function() {
       return this.name + " - " + this.room;
@@ -109,15 +98,7 @@
         $(".MIOT-show-or-hide").hide();
       };
     });
-
-    // Autopolling unhide
-    $("#node-config-input-isPolling").on('change', function (type, value) {
-      if ($(this).prop('checked')) {
-        $(".polling-show-or-hide").show();
-      } else if (!$(this).prop('checked')) {
-        $(".polling-show-or-hide").hide();
-      };
-    });
+	  
 
     // Refreshing list of devices in Chosen Device Type
     let ChosenDevType = $('#node-config-input-device_type').val();
