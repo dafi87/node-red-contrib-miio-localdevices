@@ -9,14 +9,41 @@ module.exports = function(RED) {
     node.MIdevice = RED.nodes.getNode(config.devices);
     
     node.status({}); //cleaning status
+    
+    node.on('input', function(msg) {
+      node.status({fill:"gray",shape:"dot",text:"Connecting..."});
+      
+      // 1) initialization of local MIIO Protocol
+      mihome.miioProtocol.init();
+
+      // 2) working with current device
+      if (node.MIdevice) {                
+        // 2.1) defining outgoing msg structure
+        msg.name = node.MIdevice.name + " - " + node.MIdevice.room;
+        msg.address = node.MIdevice.address;
+        msg.model = node.MIdevice.model;
+        
+        node.MIdevice.emit('onGetDeviceData');
+        
+        node.status({fill:"green",shape:"dot",text:"Command: sent"});
+        
+        node.MIdevice.on('onGetDeviceDataError', (SingleCMDErrorMsg) => {
+          node.warn(`Mihome Exception. IP: ${node.MIdevice.address} -> ${SingleCMDErrorMsg}`);
+          node.status({fill:"red",shape:"ring",text:"Command: error"});
+        });
+        
+        setTimeout(() => {
+          node.status({});
+        }, 3000);
+        
+      };  
+      
+    });
+    
+    
     var msg = {};
 
     if (node.MIdevice) {                
-      // 1) Defining auto-polling variables
-      Poll_or_Not = node.MIdevice.isPolling;
-      Polling_Interval = node.MIdevice.pollinginterval;
-      if (Poll_or_Not == false) {msg.polling = "OFF"};
-      if (Poll_or_Not == true) {msg.polling = "ON. Every " + Polling_Interval + " sec"};
       
       // 2) Defining outgoing msg structure
       msg.name = node.MIdevice.name + " - " + node.MIdevice.room;
