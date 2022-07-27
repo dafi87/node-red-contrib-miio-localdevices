@@ -102,17 +102,21 @@ module.exports = class extends Device {
     return this.miotSetProperty('air-purifier:mode', v);
   }
 
-  setFavSpeed(v) { // 300-2200
+  setFavSpeed(v) { // 200-2300
     return this.miotSetProperty('custom-service:favorite-speed', v);
+  }
+  
+  setFavoriteLevel(v) { // 0-11
+    return this.miotSetProperty('custom-service:favorite-level', v);
   }
 
   setFanLevel(v) { // string: auto, silent, medium, high
     this.miotSetProperty('air-purifier:mode', 2);
 
-    if (v === 'auto') v = 305;
-    else if (v === 'silent') v = 900;
+    if (v === 'silent') v = 450;
+    else if (v === 'low') v = 860;
     else if (v === 'medium') v = 1500;
-    else if (v === 'high') v = 2100;
+    else if (v === 'high') v = 2200;
     return this.miotSetProperty('custom-service:favorite-speed', v);
   }
 
@@ -120,7 +124,7 @@ module.exports = class extends Device {
     return this.miotSetProperty('alarm:alarm', v);
   }
 
-  setLcdBrightness(v) { // 0-off, 3-glimmer, 8-brightest
+  setLcdBrightness(v) { // 0-off, 1-bright, 2-brightest
     return this.miotSetProperty('screen:brightness', v);
   }
 
