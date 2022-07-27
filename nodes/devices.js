@@ -132,6 +132,7 @@ module.exports = function(RED) {
               if (OldData[key] !== value) {
                 node.emit('onChange', data);
                 OldData = data;
+                break;
               }
             }
           };
