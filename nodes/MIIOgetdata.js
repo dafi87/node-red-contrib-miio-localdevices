@@ -28,11 +28,6 @@ module.exports = function(RED) {
         
         node.status({fill:"green",shape:"dot",text:"Command: sent"});
         
-        node.MIdevice.on('onGetDeviceDataError', (SingleCMDErrorMsg) => {
-          node.warn(`Mihome Exception. IP: ${node.MIdevice.address} -> ${SingleCMDErrorMsg}`);
-          node.status({fill:"red",shape:"ring",text:"Command: error"});
-        });
-        
         setTimeout(() => {
           node.status({});
         }, 3000);
@@ -50,6 +45,11 @@ module.exports = function(RED) {
       msg.name = node.MIdevice.name + " - " + node.MIdevice.room;
       msg.address = node.MIdevice.address;
       msg.model = node.MIdevice.model;
+      
+      node.MIdevice.on('onGetDeviceDataError', (SingleCMDErrorMsg) => {
+        node.warn(`Mihome Exception. IP: ${node.MIdevice.address} -> ${SingleCMDErrorMsg}`);
+        node.status({fill:"red",shape:"ring",text:"Command: error"});
+      });
       
       // 3) Main Functions - Sending outgoing msg on start, on change, on error
       SendOnStart ();
