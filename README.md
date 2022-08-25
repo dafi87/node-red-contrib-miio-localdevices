@@ -42,6 +42,7 @@ It is theoretically possible to add support for any wifi-device which is operate
 - [x] dmaker.airfresh.a1
 - [x] dmaker.fan.p18
 - [x] zhimi.airpurifier.mb3
+- [x] zhimi.airp.vb4
 - [x] zhimi.fan.za5
 - [x] dmaker.fan.1c
 ## Installation
@@ -51,6 +52,10 @@ npm install node-red-contrib-miio-localdevices
 ```
 
 ## Latest Updates
+
+### version
+- removed polling since we can just request data from outside via inject node etc.
+- added support for zhimi.airp.vb4 (Xiaomi Air Purifier 4 Pro)
 
 ### version 0.5.10
 - updated deerma.humidifier.jsq4 and deerma.humidifier.jsq5 - devices are now splited and defFiles are updated (these are now first fully local MIOT-devices(!!!) - no internet connection needed anymore)
@@ -172,7 +177,6 @@ command_X: value_X
 ### Flow Example
 You can import attached [example.json](examples/example.json) from Node-Red Import menu.
 ## Future Updates and Improvement
-- [x] add auto-polling option with configurable interval
 - [x] implement MIOT protocol + add MIOT-humidifiers and purifiers
 - [x] make vocabulary with universal frendly names of properties 
 - [x] filter the list of commands in SEND-node to those applicable only to the device chosen
@@ -181,8 +185,6 @@ You can import attached [example.json](examples/example.json) from Node-Red Impo
 - [x] sending complex JSON commands
 - [x] quick respond of GET-node after every command sent to device
 - [ ] enlarge the list of devices with those operated via MIIO and MIOT protocols
-- [ ] add aqara-protocol devices
-- [ ] add bridge devices
 
 ## Reporting an issue and new devices support requests
 Please feel free to report all issues and to request support of new devices.
